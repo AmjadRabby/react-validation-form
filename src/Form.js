@@ -173,7 +173,6 @@ const Form = () => {
                     required: "This field is required",
                   })}
                 />
-
                 <label className="form-check-label" htmlFor="male">
                   male
                 </label>
@@ -189,7 +188,6 @@ const Form = () => {
                     required: "This field is required",
                   })}
                 />
-
                 <label className="form-check-label" htmlFor="female">
                   female
                 </label>
@@ -209,14 +207,12 @@ const Form = () => {
                   other
                 </label>
               </div>
-
               {errors.gender && (
                 <div className="form-text text-danger">
                   {errors.gender.message}
                 </div>
               )}
             </div>
-
             <div className="form-group">
               <div className="form-check form-check-inline">
                 <input
