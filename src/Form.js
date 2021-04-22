@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -6,18 +6,21 @@ const Form = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    watch,
+    formState: { errors, isDirty, isValid },
   } = useForm({
     mode: "onTouched",
   });
+  const password = useRef({});
+  password.current = watch("password", "");
 
-  console.log(errors);
-
+  console.log(isDirty, isValid);
   const onSubmit = (data) => {
-    console.log(data);
+    alert(JSON.stringify(data));
   };
   return (
     <div className="App">
+      <h4 className="text-center bg-white shadow p-3">React Validation Form</h4>
       <div className="container py-4">
         <div className="card border-0 shadow p-3 w-75 mx-auto">
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -33,8 +36,8 @@ const Form = () => {
                 {...register("fullName", {
                   required: "This field is required",
                   minLength: {
-                    value: 4,
-                    message: "please enter a minimum length 4 characters",
+                    value: 6,
+                    message: "please enter a minimum length 6 characters",
                   },
                 })}
               />
@@ -89,7 +92,7 @@ const Form = () => {
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <input
-                type="text"
+                type="password"
                 className={classNames("form-control", {
                   "is-invalid": errors.password,
                 })}
@@ -111,6 +114,30 @@ const Form = () => {
               )}
             </div>
             <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                className={classNames("form-control", {
+                  "is-invalid": errors.confirmPassword,
+                })}
+                id="confirmPassword"
+                placeholder="Enter Your Confirm Password"
+                {...register("confirmPassword", {
+                  required: "This field is required",
+                  validate: {
+                    value: (value) =>
+                      value === password.current ||
+                      "The passwords do not match",
+                  },
+                })}
+              />
+              {errors.confirmPassword && (
+                <div className="invalid-feedback">
+                  {errors.confirmPassword.message}
+                </div>
+              )}
+            </div>
+            <div className="form-group">
               <label htmlFor="state">Choose Your State</label>
               <select
                 className={classNames("form-control", {
@@ -122,10 +149,10 @@ const Form = () => {
                 })}
               >
                 <option value="">--- Select Your State ---</option>
-                <option value="Jharkhand">Jharkhand</option>
-                <option value="Assam">Assam</option>
-                <option value="Meghalaya">Meghalaya</option>
-                <option value="Punjab">Punjab</option>
+                <option value="dhaka">Dhaka</option>
+                <option value="chattogram">Chattogram</option>
+                <option value="comilla">Comilla</option>
+                <option value="feni">Feni</option>
               </select>
               {errors.state && (
                 <div className="invalid-feedback">{errors.state.message}</div>
@@ -210,9 +237,15 @@ const Form = () => {
                 </div>
               )}
             </div>
-            <button type="submit" className="btn btn-primary">
-              Create New Account
-            </button>
+            {isValid ? (
+              <button type="submit" className="btn btn-primary w-100">
+                Create New Account
+              </button>
+            ) : (
+              <button type="submit" className="btn btn-secondary w-100" disabled>
+                Create New Account
+              </button>
+            )}
           </form>
         </div>
       </div>
